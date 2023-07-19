@@ -1,29 +1,38 @@
-import './App.css';
+import React, { useState, useEffect } from 'react'
 
-function App() {
+const App = () => {
+  const [users, setUsers] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        const data = await response.json();
+        setUsers(data)
+      } catch (err) {
+        setError('Something went wrong!');
+      }
+    }
+    fetchAllUsers()
+  }, [])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src="Octocat.png" className="App-logo" alt="logo" />
-        <p>
-          GitHub Codespaces <span className="heart">♥️</span> React
-        </p>
-        <p className="small">
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
-      </header>
-    </div>
-  );
+    <>
+    <h1>List of Users</h1>
+    {error && <div>{error}</div>}
+    {users ? (
+      <ul>
+        {users.map((user) => (
+          <li key={user.id}>{user.name}</li>
+        ))}
+      </ul>
+    ) : (
+      <p>No users found</p>
+    )}
+  </>
+  )
 }
 
 export default App;
